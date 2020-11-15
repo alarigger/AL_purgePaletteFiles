@@ -13,9 +13,14 @@ function AL_PurgePalettesFiles(){
 	var palette_directory = "palette-library";
 	
 	var logfile = "AL_palette_log.txt";
-	var repport = "palette deletion log";
+	var log = "log "+Date.now("d")+"\n";
+	var repport ="";
+	
+	var postrepport = "";
 	
 	var deletedPaletteDir = projectpath+"/"+"palette_to_delete/";
+	
+	var deletioncount = 0;
 	
 
 
@@ -30,15 +35,72 @@ function AL_PurgePalettesFiles(){
 	MessageLog.trace( "files_to_delete : ");
 	MessageLog.trace( files_to_delete);
 	
-	delete_files()
-	updateLog();
+	Confirmdialog()
 	
 	
 	
 	
 
 	// FUNCTIONS 
+	
+	
+	function Confirmdialog() {
 
+		var d = new Dialog
+
+            d.title = "AL_PurgePalettesFiles";
+			
+			if(files_to_delete.length>0){
+
+				repport += "The following files are about to be deleted : "
+
+
+				for (var c = 0; c < files_to_delete.length; c++) {
+
+					var files = files_to_delete[c];
+
+					repport += "\n" + files;
+
+				}				
+			}else{
+				
+				repport = "no files to delete";
+				
+			}
+
+			
+			var bodyText = new Label();
+			bodyText.text =repport;
+			d.add( bodyText );
+
+            MessageLog.trace(repport);
+
+         //   MessageBox.information(repport)
+
+            var rc = d.exec();
+
+            if (rc) {
+				
+				if(files_to_delete.length>0){
+					
+					reupload_ghost_palettes()
+					
+					//delete_files()
+					
+					MessageLog.trace(repport);
+					
+					updateLog();
+
+					MessageBox.information(postrepport);
+				
+				}
+
+
+
+            }
+
+
+	}
 
 	
 	function read_palette_files(){
@@ -90,6 +152,7 @@ function AL_PurgePalettesFiles(){
 			if(match == 0){
 				MessageLog.trace(palette_file_name + "IS UNUSED")
 				unmatched_files.push(scene_palettes_files[f]);
+				unmatched_files.push(scene_palettes_files[f]+"~");
 			}
 			
 		}
@@ -103,7 +166,6 @@ function AL_PurgePalettesFiles(){
 		
 		var filename = "palettelog.txt";
 		
-		
 		MessageLog.trace(projectpath);
 
 		var filePath = projectpath+"/"+filename;	
@@ -111,12 +173,34 @@ function AL_PurgePalettesFiles(){
 
 		var content = file.read()
 		file.open();                 // open with write only stream
-		file.writeLine( content+"new log" );           // write line to file
+		file.writeLine(content+log);           // write line to file
 		file.close();  
+	
+	}
+	
+	
+	function reupload_ghost_palettes(){
 		
+			var PL = 	PaletteObjectManager.getScenePaletteList()
 
+		for (var f = 0 ; f<files_to_delete.length;f++){
+	
+			//var dirpath =  projectpath+"/"+projectpath+"/"+palette_directory;
+			var dirpath =  projectpath+"/"+palette_directory;
+			var palette_file_name = files_to_delete[f];
+			var palette_path = dirpath+"/"+palette_file_name;
+			
+			var reimported_palette = PL .addPalette(palette_path);
+			
+			PaletteObjectManager.removePaletteReferencesAndDeleteOnDisk(reimported_palette.id)
 
-									
+		
+		}
+		
+		
+		
+		
+		
 	}
 
 	function delete_files(){
@@ -132,10 +216,9 @@ function AL_PurgePalettesFiles(){
 		
 		*/
 		
-		
-		
-		
 		MessageLog.trace( "delete_files");
+		
+
 		
 		for(var d = 0; d < files_to_delete.length ; d++){
 		
@@ -143,20 +226,22 @@ function AL_PurgePalettesFiles(){
 			MessageLog.trace("about to delete");
 			MessageLog.trace( filePath);
 			file = new PermanentFile(filePath);
-			file.remove();	
-			//file.move(moveTo);
+			
+			if(file.remove()){
+				log+=files_to_delete[d]+" ---- was deleted"+"\n";
+				postrepport+=files_to_delete[d]+" ---- was deleted"+"\n";
+				deletioncount ++;
+			}else{
+				log+=" ! unable to delete "+files_to_delete[d]+"\n";
+				postrepport+=" ! unable to delete "+files_to_delete[d]+"\n";
+			}
+			
 			
 			
 
-			var filePath = projectpath+"/"+palette_directory+"/"+files_to_delete[d]+"~";
-			MessageLog.trace("about to delete");
-			MessageLog.trace( filePath);
-			file = new PermanentFile(filePath);
-			file.remove();
-			//file.move(moveTo);			
-			
-			
 		}
+		
+		
 
 	}
 

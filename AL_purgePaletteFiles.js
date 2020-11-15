@@ -83,7 +83,7 @@ function AL_PurgePalettesFiles(){
 				
 				if(files_to_delete.length>0){
 					
-					reupload_ghost_palettes()
+					reupload_ghost_palettes_and_remove_them();
 					
 					//delete_files()
 					
@@ -179,7 +179,7 @@ function AL_PurgePalettesFiles(){
 	}
 	
 	
-	function reupload_ghost_palettes(){
+	function reupload_ghost_palettes_and_remove_them(){
 		
 			var PL = 	PaletteObjectManager.getScenePaletteList()
 
@@ -192,7 +192,11 @@ function AL_PurgePalettesFiles(){
 			
 			var reimported_palette = PL .addPalette(palette_path);
 			
+			//scene.saveAll();
+			
 			PaletteObjectManager.removePaletteReferencesAndDeleteOnDisk(reimported_palette.id)
+			
+			
 
 		
 		}

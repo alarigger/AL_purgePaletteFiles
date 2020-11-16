@@ -25,8 +25,8 @@ function AL_PurgePalettesFiles(){
 
 
 	//EXECUTION 
-	
-	
+
+	MessageLog.trace(scene.currentProjectPathRemapped())
 	
 	scene_palettes_files = read_palette_files();
 	scene_palettes_names = read_scene_palettes();
@@ -101,14 +101,56 @@ function AL_PurgePalettesFiles(){
 
 
 	}
+	
+	function reupload_ghost_palettes_and_remove_them(){
+		
+			var PL =PaletteObjectManager.getScenePaletteList()
+
+		for (var f = 0 ; f<files_to_delete.length;f++){
+	
+
+			var palette_file_name = files_to_delete[f];
+			var palette_path_file= get_palette_library_path()+"/"+palette_file_name;
+			var palette_path =palette_path_file.split('.')[0];
+			var reimported_palette = PL.addPalette(palette_path);
+			
+			MessageLog.trace(reimported_palette)
+			MessageLog.trace(reimported_palette.id)
+			MessageLog.trace(palette_file_name)
+			
+			//scene.saveAll();
+			MessageLog.trace("removePaletteReferencesAndDeleteOnDisk");
+			MessageLog.trace(PaletteObjectManager.removePaletteReferencesAndDeleteOnDisk(reimported_palette.id))
+			
+
+		
+		}
+		
+		
+		
+		
+		
+	}
+	
+	function get_palette_library_path(){
+		
+		var slash = "\\";
+	
+		var finalpath =scene.currentProjectPathRemapped()+slash+palette_directory; 
+		
+		return  finalpath;
+		
+	}
 
 	
 	function read_palette_files(){
 		
 		var dir = new Dir;
-		var dirpath =  projectpath+"/"+palette_directory;
+		var dirpath =  get_palette_library_path();
 		dir.path =dirpath;
 		
+		MessageLog.trace("palette files : ");
+		MessageLog.trace(dir.path);
 		MessageLog.trace(dir.entryList("*.plt",-1,-1));
 		return dir.entryList("*.plt",-1,-1);
 
@@ -127,6 +169,7 @@ function AL_PurgePalettesFiles(){
 
 			}	
 			
+		MessageLog.trace("scene palette");
 		MessageLog.trace(palettes_names);
 			
 		return palettes_names;
@@ -152,7 +195,7 @@ function AL_PurgePalettesFiles(){
 			if(match == 0){
 				MessageLog.trace(palette_file_name + "IS UNUSED")
 				unmatched_files.push(scene_palettes_files[f]);
-				unmatched_files.push(scene_palettes_files[f]+"~");
+				//unmatched_files.push(scene_palettes_files[f]+"~");
 			}
 			
 		}
@@ -179,33 +222,7 @@ function AL_PurgePalettesFiles(){
 	}
 	
 	
-	function reupload_ghost_palettes_and_remove_them(){
-		
-			var PL = 	PaletteObjectManager.getScenePaletteList()
 
-		for (var f = 0 ; f<files_to_delete.length;f++){
-	
-			//var dirpath =  projectpath+"/"+projectpath+"/"+palette_directory;
-			var dirpath =  projectpath+"/"+palette_directory;
-			var palette_file_name = files_to_delete[f];
-			var palette_path = dirpath+"/"+palette_file_name;
-			
-			var reimported_palette = PL .addPalette(palette_path);
-			
-			//scene.saveAll();
-			
-			PaletteObjectManager.removePaletteReferencesAndDeleteOnDisk(reimported_palette.id)
-			
-			
-
-		
-		}
-		
-		
-		
-		
-		
-	}
 
 	function delete_files(){
 		

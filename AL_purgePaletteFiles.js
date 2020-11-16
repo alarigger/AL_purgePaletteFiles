@@ -5,6 +5,11 @@ AL_PurgePalettesFiles
 delete unused palettes stored inside the scene directory. 
 create a log file : "palette_deletion_log.txt" at the root od the scene directory. 
 
+options : 
+delete ALL pencil texture palettes 
+delete ALL texture directories
+
+
 16_11_2020
 
 Author :  Alexandre Cormier 

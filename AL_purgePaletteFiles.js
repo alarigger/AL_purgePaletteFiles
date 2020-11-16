@@ -3,6 +3,7 @@
 AL_PurgePalettesFiles
 
 delete unused palettes stored inside the scene directory. 
+create a log file : "palette_deletion_log.txt" at the root od the scene directory. 
 
 16_11_2020
 

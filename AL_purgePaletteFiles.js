@@ -43,8 +43,8 @@ function AL_PurgePalettesFiles(){
 	
 	var today =new Date().toLocaleDateString()
 	
-	var logfile = "AL_palette_log.txt";
-	var log = "LOG >>>> "+Date()+"\n";
+	var logfileName = "AL_palette_log.txt";
+	var log = "\n\n ******** NEW LOG >>>> "+Date()+"\n\n\n";
 	var repport ="";
 	
 	var postrepport = "";
@@ -463,7 +463,7 @@ function AL_PurgePalettesFiles(){
 
 	function updateLog(){
 		
-		var filename = "palette_deletion_log.txt";
+		var filename = "AL_palette_deletion_log.txt";
 
 		var filePath = scene.currentProjectPathRemapped()+"/"+filename;	
 		logfile = new PermanentFile(filePath);

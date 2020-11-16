@@ -1,5 +1,20 @@
-// Alexandre Cormier 16_11_2020
+/*
 
+AL_PurgePalettesFiles
+
+delete unused palettes stored inside the scene directory. 
+
+16_11_2020
+
+Author :  Alexandre Cormier 
+repository : https://github.com/alarigger/AL_purgePaletteFiles
+website : www.alarigger.com
+version : 1.0 
+Licence : GNU GPL licence v2.0
+
+*/
+
+// ***************************************  P U R G E _ P A L E T T E S _ F I L E S ************************** //
 
 function AL_PurgePalettesFiles(){
 
@@ -28,7 +43,6 @@ function AL_PurgePalettesFiles(){
 
 
 	//EXECUTION 
-	updateLog();
 
 	MessageLog.trace(scene.currentProjectPathRemapped())
 		
